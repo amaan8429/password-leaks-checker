@@ -1,6 +1,11 @@
 import sys
 import requests
 import hashlib
+from dotenv import load_dotenv
+import os
+load_dotenv()
+import json
+
 
 #this function will take the first five characters of the hashed password and return the response from the api
 def api_fetch(first_five_char):
@@ -29,13 +34,19 @@ def get_hashed_password(password):
 
 #this function will take the password and return the count of the password leaks
 if __name__ == "__main__":
-    passwords = sys.argv[1:]
-    for password in passwords:
-        count = get_hashed_password(password)
-        if count:
-            print(f"{count} times found, you should change your password")
-        else:
-            print("Your password is safe")
+    passwords = os.getenv("PASSWORDS")
+    if passwords:
+        passwords = json.loads(passwords)
+        for password in passwords:
+            count = get_hashed_password(password)
+            if count:
+                print(f"Your Password {password} was {count} times found, you should change your password")
+            else:
+                print(f"{password} = Your password is safe")
+
+
+
+                
     
 
 
